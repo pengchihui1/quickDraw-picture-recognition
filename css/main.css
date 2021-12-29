@@ -5,11 +5,11 @@
 
 html,
 body {
-  margin: 0 auto;
+  margin: auto 0;
   /* font-family: "zig", sans-serif; */
   font-weight: bold;
   font-size: 1rem;
-  color: white;
+  /* color: white; */
 }
 
 canvas {
@@ -21,7 +21,7 @@ h2 {
 }
 
 nav {
-  height: 10rem;
+  /* height: 10rem;
   padding-top: 1rem;
   background: #ff1d8e;
   background: -moz-linear-gradient(
@@ -52,13 +52,17 @@ nav {
     #ff9cce 100%
   );
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff1d8e', endColorstr='#ff9cce',GradientType=0 );
+  user-select: none; */
   border-bottom: 5px solid #69ffb4;
-  user-select: none;
 }
 
-.overlay,
+.overlay {
+  display: flex;
+  justify-content: center;
+}
+/* .overlay */
 .victory,
-.gameover,
+/* .gameover, */
 .no-mobile {
   z-index: 1;
   position: absolute;
@@ -100,10 +104,11 @@ nav {
   width: 50rem;
 }
 
-.overlay-text-container p {
+/* .overlay-text-container p {
   width: 90%;
-  height: 100px;
-}
+  height: 50px;
+  line-height: 50px;
+} */
 
 .canvas-container {
   text-align: center;
@@ -148,17 +153,17 @@ nav {
   text-decoration: none;
   border: none;
   background-color: #69ffb4;
-  font-family: "zig", sans-serif;
+  /* font-family: "zig", sans-serif; */
   font-size: 1rem;
-  color: white;
+  /* color: white; */
   padding: 1.5rem;
-  box-shadow: 5px 5px 1px 0 #54cc90;
+  /* box-shadow: 5px 5px 1px 0 #54cc90; */
 }
 
-.ok-button,
+/* .ok-button,
 .retry-button {
   margin: 50px 30% 0 37%;
-}
+} */
 
 .copyright {
   font-size: 0.5rem;
@@ -204,18 +209,14 @@ nav {
 }
 
 .iziToast {
-  font-family: "zig", sans-serif;
+  /* font-family: "zig", sans-serif; */
   z-index: 100;
 }
 
-.drawthis {
-  margin-bottom: 0;
-}
-
-.countdown {
+/* .countdown {
   margin-top: 1rem;
-  font-size: 1.5rem;
-}
+  font-size: 18px;
+} */
 
 .victory {
   display: none;
@@ -224,7 +225,7 @@ nav {
 .doomguy {
   width: 32px;
   height: 32px;
-  background-image: url("../img/doomguy.gif");
+  /* background-image: url("../img/doomguy.gif"); */
   background-size: cover;
   display: none;
 }
@@ -243,11 +244,13 @@ nav {
   margin: 0 35%;
 }
 
-#pointsscored {
-  margin-left: 28%;
-}
-
 .no-mobile {
   display: none;
   z-index: 2;
+}
+
+.gameover-result {
+  width: 100%;
+  text-align: center;
+  line-height: 40px;
 }

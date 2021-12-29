@@ -35,7 +35,7 @@ const classsName=[
   {id:34,englishName:"map",chineseName:"地圖"},
   {id:35,englishName:"baseball",chineseName:"棒球"},
   {id:36,englishName:"tennis racquet",chineseName:"網球拍"},
-  {id:37,englishName:"line",chineseName:"線"},
+  {id:37,englishName:"line",chineseName:"線條"},
   {id:38,englishName:"dishwasher",chineseName:"洗碗機"},
   {id:39,englishName:"paintbrush",chineseName:"畫筆"},
   {id:40,englishName:"fork",chineseName:"叉子"},
@@ -343,42 +343,50 @@ const classsName=[
   {id:342,englishName:"kangaroo",chineseName:"袋鼠"},
   {id:343,englishName:"snake",chineseName:"蛇"},
   {id:344,englishName:"tornado",chineseName:"龍捲風"},
-  {id:345,englishName:"rain",chineseName:"雨"},
-  {id:346,englishName:"sunglasses",chineseName:"太陽鏡"},
+  {id:345,englishName:"rain",chineseName:"雨"}
 ]
+
+// 記錄題目 及畫對次數
+const condition=[]
+
 $(function() {
 
-  // var intro = document.getElementById("audio-intro");
-  // var ingame = document.getElementById("audio-ingame");
-
-  /* No mobile browser support */
-
+  /* No mobile browser support  不支持移動瀏覽器*/
   if (/Mobi/.test(navigator.userAgent)) {
     $('.no-mobile').css('display', 'block');
     $('.doomguy').css('display', 'block');
     $('.doomguy').css('height', '128px');
     $('.doomguy').css('width', '128px');
-    $('content-container').css('display', 'none');
-    $('audio').css('display', 'none');
+    $('main').css('display', 'none');
     $('button').css('display', 'none');
     $('.ok-button').css('display', 'none');
-    // intro.pause();
+    $('.option-show').css('display', 'none');
   }
+    // showText("#message1", "您有 20 秒的時間來繪製每張圖片。谷歌神經網絡會嘗試猜測你在畫什麼。您將從簡單的難度級別開始。 繪製簡單的大圖。", 0, 40);
 
-  showText("#message1", "您有 20 秒的時間來繪製每張圖片。谷歌神經網絡會嘗試猜測你在畫什麼。您將從簡單的難度級別開始。 繪製簡單的大圖。", 0, 40);
+  $('.start-button').on('click', function(){
+    $('.overlay').css('display', 'none');
+    $('.option-show').css('display', 'flex');
+    // 創建第一個題
+    const itemValue=classsName.find(item=>item.englishName===drawableItem)
+    condition.push({name:itemValue.chineseName,englishName:itemValue.englishName,state:false,number:0})
+    $('#picture').html(condition[condition.length-1].name);
+    $('#currentNum').html(condition.length)
+    $('#pictureName').html(condition[condition.length-1].name);
+  });
 
   $('.ok-button').on('click', function(){
+    $('.main').css('display', 'block');
     $('.overlay').css('display', 'none');
-    // intro.pause();
-    // ingame.play();
+    $('.option-show').css('display', 'none');
+    $('#currentNum').html(condition.length)
+    $('#pictureName').html(condition[condition.length-1].name);
     timer(playSeconds);
   });
 
   $(document).on('keypress', function(e){
     if (e.keyCode === 13) {
       $('.overlay').css('display', 'none');
-      // intro.pause();
-      // ingame.play();
       timer(playSeconds);
     }
   });
@@ -387,30 +395,27 @@ $(function() {
     $('.gameover').css('display', 'none');
     location.reload();
   });
-  const itemValue=classsName.find(item=>item.englishName===drawableItem)
-  $('#picture').html(itemValue.chineseName);
+ 
 });
 
 var difficulty = 'easy';
 
 var levelPics = {
-  easy: ['tree', 'flying saucer', 'door', 'sunglasses', 'clock', 'skateboard', 'triangle', 'envelope', 'house', 'basketball', 'lollipop', 'paper clip', 'sun', 'fork'],
-  medium: ['crown', 'hospital', 'bat', 'helicopter', 'laptop', 'penguin', 'shorts', 'parachute', 'bed', 'cactus', 'car', 'lantern', 'owl', 'skull', 'jail', 'campfire', 'hamburger'],
-  hard: ['aircraft carrier', 'animal migration', 'sea turtle', 'the mona lisa', 'hot tub', 'kangaroo', 'bulldozer', 'the great wall of china', 'the eiffel tower', 'dragon', 'trombone', 'sink', 'school bus']
+  easy: ['flying saucer', 'door', 'eyeglasses', 'clock', 'skateboard', 'triangle', 'sun'],
+  // easy: ['tree', 'flying saucer', 'door', 'eyeglasses', 'clock', 'skateboard', 'triangle', 'envelope', 'scissors', 'basketball', 'lollipop', 'paper clip', 'sun', 'fork'],
+  // medium: ['crown', 'hospital', 'bat', 'helicopter', 'laptop', 'penguin', 'shorts', 'parachute', 'bed', 'cactus', 'car', 'lantern', 'owl', 'skull', 'jail', 'campfire', 'hamburger'],
+  // hard: ['aircraft carrier', 'animal migration', 'sea turtle', 'the mona lisa', 'hot tub', 'kangaroo', 'bulldozer', 'the great wall of china', 'the eiffel tower', 'dragon', 'trombone', 'sink', 'school bus']
 };
 
 var drawableItem = drawingRandomizer(difficulty, levelPics);
 
 var points = 0;
-// var successaudio = document.getElementById("audio-effect");
-// var ingame = document.getElementById("audio-ingame");
-// var victory = document.getElementById("audio-victory");
-var playSeconds = 21;
+var playSeconds = 20;
 var countdown;
 
-var postDrawing =
-
-  function() { $.ajax({
+var postDrawing =function() {
+  // console.log(canvas.width,canvas.height,trace)
+   $.ajax({
     type: "POST",
     headers: {
       'Content-Type': 'application/json'
@@ -431,26 +436,21 @@ var postDrawing =
     success: function(data, status) {
       var resultCrude = data[1][0][1][0];
       var result = resultCrude.toLowerCase();
-      if (result === drawableItem) {
-        $('canvas').css('user-select', 'none');
-        points += 1;
-        if(points >= 15) {
-          $('.victory').css('display', 'block');
-          // successaudio.play();
-          showGoogleGuess(result, 'success');
-          // ingame.pause();
-          // victory.play();
-          clearInterval(countdown);
-        } else {
-          $('#pointstext').html('Points: ' + points);
-          toggleSuccess();
-          // successaudio.play();
-          showGoogleGuess(result, 'success');
-          getDifficulty();
-          displayNextItem();
-          timer(playSeconds);
-          $('canvas').css('user-select', 'all');
-        }
+      questionUpdateStatus(result,drawableItem);//單前題目狀態更新
+      if (result === drawableItem) { //返回結果 與當天題目一致
+        showGoogleGuess(result, 'success');
+        // points += 1;
+        // if(points >= 15) {
+        //   showGoogleGuess(result, 'success');
+        //   clearInterval(countdown);
+        // } else {
+        //   toggleSuccess();
+        //   showGoogleGuess(result, 'success');
+        //   getDifficulty();
+        //   displayNextItem();
+        //   timer(playSeconds);
+        //   $('canvas').css('user-select', 'all');
+        // }
       } else {
         showGoogleGuess(result, 'nosuccess');
       }
@@ -515,15 +515,14 @@ function getDifficulty() {
 
 function showGoogleGuess(result, success) {
   var color = success === 'success' ? 'green' : 'blue';
-  const itemValue=classsName.find(item=>{ return item.englishName.includes(result) })
-  console.log(itemValue,result)
+  const itemValue=classsName.find(item=>{ return item.englishName.includes(result)})
   iziToast.show({
     color: color,
-    position: 'bottomRight',
+    position: 'bottomRight',//bottomRight
     timeout: '1700',
     pauseOnHover: false,
     title: '谷歌認為你在畫這個: ',
-    message: itemValue.chineseName||"猜不出"
+    message: itemValue?itemValue.chineseName:"猜不出"
 });
 }
 
@@ -540,23 +539,81 @@ function timer(seconds) {
 
   clearInterval(countdown);
   var counter = seconds;
-
   countdown = setInterval(function(){
     counter--;
-    if(counter < 0) {
+    if(counter <=0) {
       clearInterval(countdown);
-      gameOver();
+      nextQuestion();//下一題
+      finishQuestion();//完成題目
     }
-    timerDisplay.textContent = '倒計時: ' + counter;
+    timerDisplay.textContent = counter.toString().length>1?counter:'0'+counter;
   }, 1000);
 }
 
+// 倒計時，下一題
+function nextQuestion() {
+  $('.overlay').css('display', 'none');
+  $('.main').css('display', 'none');
+  $('.option-show').css('display', 'flex');
+  questionBreak()
+  $('#currentNum').html(condition.length)
+  $('#picture').html(condition[condition.length-1].name);
+  $('#pictureName').html(condition[condition.length-1].name);
+  // console.log("下一題",condition,drawableItem,condition[condition.length-1].name)
+  clearCanvas();
+}
 
 function gameOver() {
   $('.gameover').css('display', 'block');
-  // var ingame = document.getElementById("audio-ingame");
-  // var fail = document.getElementById("audio-fail");
-  $('#pointsscored').html('你畫對了: ' + points + (points === 1 ? '次.' : '次.'));
-  // ingame.pause();
-  // fail.play();
+  $('#pointsscored').html('你獲得了: ' + points + (points === 1 ? '分.' : '分.'));
+}
+
+// 產生題目不重複
+function questionBreak() {
+  var i = 0;
+  while (i <10) {
+    drawableItem= drawingRandomizer(difficulty, levelPics)
+    const itemValue=classsName.find(item=>item.englishName===drawableItem)//根據英文名字找到中文
+    const isTrue=condition.find(item=>item.name===itemValue.chineseName)//這個題目是否存在題目中
+    if (!isTrue) {
+      condition.push({name:itemValue.chineseName,englishName:itemValue.englishName,state:false,number:0})
+      break;
+    }
+    i += 1;
+  }
+  return ""
+}
+
+// 到達6個題目後，進入到結束頁面
+function finishQuestion(){
+  if(condition.length>=6){
+   $('.gameover').css('display', 'flex');
+   $('.overlay').css('display', 'none');
+   $('.option-show').css('display', 'none');
+   $('.main').css('display', 'none');
+   $('#pointsscored').html(showQuestion())
+  }
+}
+
+// 顯示題目是否做對
+function showQuestion(){
+  const res=[]
+  condition.forEach((item,index)=>{
+    res.push(`<p>第${index+1}題: ${item.name}（${!!item.state?"正確":"不正確"})<p>`)
+  })
+  return res.join("")
+}
+
+// 題目更新狀態
+function questionUpdateStatus(result,drawableItem){
+  // 題目中存在單前題目，並且與返回結果一致時，狀態更改為正確 
+  for(var i=0;i<condition.length;i++){
+    const same=condition.find(item=>item.englishName===drawableItem)
+    // console.log(i,"循環內容",condition[i].englishName,"單前",same.englishName,"請求的值",result)
+    if(condition[i].englishName===same.englishName&&same.englishName===result){
+        condition[i].state=true
+    }else if(condition[i].englishName===same.englishName&&same.englishName!==result){
+        condition[i].state=false
+    }
+  }
 }
