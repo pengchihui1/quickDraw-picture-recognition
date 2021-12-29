@@ -384,12 +384,22 @@ $(function() {
     timer(playSeconds);
   });
 
-  $(document).on('keypress', function(e){
-    if (e.keyCode === 13) {
-      $('.overlay').css('display', 'none');
-      timer(playSeconds);
+  $('.next-button').on('click',function(){
+     clearInterval(countdown);
+     nextQuestion();//下一題
+    if(condition.length>=6){
+      $('.next-button').css('display', 'none');
     }
-  });
+    console.log(condition)
+  })
+
+  // $(document).on('keypress', function(e){
+  //   console.log("回車鍵")
+  //   if (e.keyCode === 13) {
+  //     $('.overlay').css('display', 'none');
+  //     timer(playSeconds);
+  //   }
+  // });
 
   $('.retry-button').on('click', function() {
     $('.gameover').css('display', 'none');
@@ -533,10 +543,9 @@ var showText = function (target, message, index, interval) {
   }
 };
 
+// 當前題目倒計時
 var timerDisplay = document.querySelector('.countdown');
-
 function timer(seconds) {
-
   clearInterval(countdown);
   var counter = seconds;
   countdown = setInterval(function(){
@@ -552,15 +561,17 @@ function timer(seconds) {
 
 // 倒計時，下一題
 function nextQuestion() {
-  $('.overlay').css('display', 'none');
-  $('.main').css('display', 'none');
-  $('.option-show').css('display', 'flex');
-  questionBreak()
-  $('#currentNum').html(condition.length)
-  $('#picture').html(condition[condition.length-1].name);
-  $('#pictureName').html(condition[condition.length-1].name);
-  // console.log("下一題",condition,drawableItem,condition[condition.length-1].name)
-  clearCanvas();
+  if(condition.length < 6){
+    $('.overlay').css('display', 'none');
+    $('.main').css('display', 'none');
+    $('.option-show').css('display', 'flex');
+    questionBreak()
+    $('#currentNum').html(condition.length)
+    $('#picture').html(condition[condition.length-1].name);
+    $('#pictureName').html(condition[condition.length-1].name);
+    // console.log("下一題",condition,drawableItem,condition[condition.length-1].name)
+    clearCanvas();
+  }
 }
 
 function gameOver() {
@@ -586,7 +597,7 @@ function questionBreak() {
 
 // 到達6個題目後，進入到結束頁面
 function finishQuestion(){
-  if(condition.length>=6){
+  if(condition.length >=6 ){
    $('.gameover').css('display', 'flex');
    $('.overlay').css('display', 'none');
    $('.option-show').css('display', 'none');

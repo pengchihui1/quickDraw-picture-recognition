@@ -18,13 +18,13 @@ express基于TensorFlow.js 的 quickdraw 网络演示应用：https://github.com
 随机画图：https://github.com/Jdruwe/quickdraw
 随机出题，1秒中后换题：https://github.com/arunisha2011/quickdraw
 类似官方的picture-recognition：https://github.com/jsur/picture-recognition
-更具物体英文名字显示图案：https://github.com/mylesdomingo/Draw-Something
-游戏化需登入：https://github.com/kai-is-coding/quickdraw-frontend
-
+根据物体英文名字显示图案：https://github.com/mylesdomingo/Draw-Something
+游戏化需登入，有做登入拦截：https://github.com/kai-is-coding/quickdraw-frontend
 ```
 
 ### 項目簡介
 
 ```
-基於html網頁，進行20秒鐘畫圖，共畫六個小題目，數據請求基於jq的ajax,根據畫圖的坐標集合及屏幕尺寸，請求google官方的quickdraw獲得對應的名稱
+1.基於html網頁，進行20秒鐘畫圖，共畫六個小題目，數據請求基於jq的ajax,根據畫圖的坐標集合及屏幕尺寸，請求google官方的quickdraw獲得對應的名稱
+2.預覽鏈接：https://quick-draw-picture-recognition.vercel.app/
 ```
