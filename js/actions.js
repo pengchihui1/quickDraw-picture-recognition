@@ -390,7 +390,7 @@ $(function() {
     if(condition.length>=6){
       $('.next-button').css('display', 'none');
     }
-    console.log(condition)
+    // console.log(condition)
   })
 
   // $(document).on('keypress', function(e){
@@ -547,6 +547,7 @@ var showText = function (target, message, index, interval) {
 // 當前題目倒計時
 var timerDisplay = document.querySelector('.countdown');
 function timer(seconds) {
+  $('.countdown').html('20');
   clearInterval(countdown);
   var counter = seconds;
   countdown = setInterval(function(){
