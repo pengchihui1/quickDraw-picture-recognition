@@ -446,6 +446,7 @@ var postDrawing =function() {
     success: function(data, status) {
       var resultCrude = data[1][0][1][0];
       var result = resultCrude.toLowerCase();
+      console.log(data)
       questionUpdateStatus(result,drawableItem);//單前題目狀態更新
       if (result === drawableItem) { //返回結果 與當天題目一致
         showGoogleGuess(result, 'success');
