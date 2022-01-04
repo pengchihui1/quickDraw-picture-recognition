@@ -350,7 +350,6 @@ const classsName=[
 const condition=[]
 
 $(function() {
-
   /* No mobile browser support  不支持移動瀏覽器*/
   if (/Mobi/.test(navigator.userAgent)) {
     $('.no-mobile').css('display', 'block');
@@ -362,12 +361,13 @@ $(function() {
     $('.ok-button').css('display', 'none');
     $('.option-show').css('display', 'none');
   }
-    // showText("#message1", "您有 20 秒的時間來繪製每張圖片。谷歌神經網絡會嘗試猜測你在畫什麼。您將從簡單的難度級別開始。 繪製簡單的大圖。", 0, 40);
+  
+  // showText("#message1", "您有 20 秒的時間來繪製每張圖片。谷歌神經網絡會嘗試猜測你在畫什麼。您將從簡單的難度級別開始。 繪製簡單的大圖。", 0, 40);
 
   $('.start-button').on('click', function(){
     $('.overlay').css('display', 'none');
     $('.option-show').css('display', 'flex');
-    // 創建第一個題
+    // 創建第一題
     const itemValue=classsName.find(item=>item.englishName===drawableItem)
     condition.push({name:itemValue.chineseName,englishName:itemValue.englishName,state:false,number:0})
     $('#picture').html(condition[condition.length-1].name);
@@ -385,19 +385,15 @@ $(function() {
   });
 
   $('.next-button').on('click',function(){
-     clearInterval(countdown);
-     nextQuestion();//下一題
-    if(condition.length>=6){
-      $('.next-button').css('display', 'none');
-    }
-    // console.log(condition)
+    clearInterval(countdown);
+    nextQeuestionCondition(); //下一題
   })
 
   // $(document).on('keypress', function(e){
   //   console.log("回車鍵")
   //   if (e.keyCode === 13) {
   //     $('.overlay').css('display', 'none');
-  //     timer(playSeconds);
+  //     $('.option-show').css('display', 'flex');
   //   }
   // });
 
@@ -417,6 +413,7 @@ var levelPics = {
   // hard: ['aircraft carrier', 'animal migration', 'sea turtle', 'the mona lisa', 'hot tub', 'kangaroo', 'bulldozer', 'the great wall of china', 'the eiffel tower', 'dragon', 'trombone', 'sink', 'school bus']
 };
 
+// 自動產生第一題
 var drawableItem = drawingRandomizer(difficulty, levelPics);
 
 var points = 0;
@@ -446,22 +443,11 @@ var postDrawing =function() {
     success: function(data, status) {
       var resultCrude = data[1][0][1][0];
       var result = resultCrude.toLowerCase();
-      console.log(data)
+      // console.log(data)
       questionUpdateStatus(result,drawableItem);//單前題目狀態更新
       if (result === drawableItem) { //返回結果 與當天題目一致
         showGoogleGuess(result, 'success');
-        // points += 1;
-        // if(points >= 15) {
-        //   showGoogleGuess(result, 'success');
-        //   clearInterval(countdown);
-        // } else {
-        //   toggleSuccess();
-        //   showGoogleGuess(result, 'success');
-        //   getDifficulty();
-        //   displayNextItem();
-        //   timer(playSeconds);
-        //   $('canvas').css('user-select', 'all');
-        // }
+        nextQeuestionCondition();//下一題
       } else {
         showGoogleGuess(result, 'nosuccess');
       }
@@ -473,7 +459,6 @@ var postDrawing =function() {
   };
 
 function drawingRandomizer(difficulty, pictures) {
-
   if (difficulty === 'easy') {
     return randomArrayItem(pictures.easy);
   } else  if (difficulty === 'medium') {
@@ -521,7 +506,6 @@ function getDifficulty() {
   }
 
   $('#difficultytext').html('Difficulty: ' + difficulty);
-
 }
 
 function showGoogleGuess(result, success) {
@@ -548,14 +532,14 @@ var showText = function (target, message, index, interval) {
 var timerDisplay = document.querySelector('.countdown');
 function timer(seconds) {
   $('.countdown').html('20');
+  nextQuestionHidden()
   clearInterval(countdown);
   var counter = seconds;
   countdown = setInterval(function(){
     counter--;
     if(counter <=0) {
       clearInterval(countdown);
-      nextQuestion();//下一題
-      finishQuestion();//完成題目
+      nextQeuestionCondition(); //下一題
     }
     timerDisplay.textContent = counter.toString().length>1?counter:'0'+counter;
   }, 1000);
@@ -563,7 +547,9 @@ function timer(seconds) {
 
 // 倒計時，下一題
 function nextQuestion() {
-  if(condition.length < 6){
+  if(condition.length <= 6){
+    clearInterval(countdown);
+    // console.log("清空",countdown)
     $('.overlay').css('display', 'none');
     $('.main').css('display', 'none');
     $('.option-show').css('display', 'flex');
@@ -597,17 +583,6 @@ function questionBreak() {
   return ""
 }
 
-// 到達6個題目後，進入到結束頁面
-function finishQuestion(){
-  if(condition.length >=6 ){
-   $('.gameover').css('display', 'flex');
-   $('.overlay').css('display', 'none');
-   $('.option-show').css('display', 'none');
-   $('.main').css('display', 'none');
-   $('#pointsscored').html(showQuestion())
-  }
-}
-
 // 顯示題目是否做對
 function showQuestion(){
   const res=[]
@@ -630,3 +605,24 @@ function questionUpdateStatus(result,drawableItem){
     }
   }
 }
+
+// 下一題及情況condition
+function nextQeuestionCondition(){
+  if(condition.length<6){
+    nextQuestion();//下一題
+  }else{
+    $('.gameover').css('display', 'flex');
+    $('.overlay').css('display', 'none');
+    $('.option-show').css('display', 'none');
+    $('.main').css('display', 'none');
+    $('#pointsscored').html(showQuestion())
+  }
+}
+
+// 下一題隱藏
+function nextQuestionHidden(){
+  if(condition.length>=6){
+    $('.next-button').css('display', 'none');
+  }
+}
+
