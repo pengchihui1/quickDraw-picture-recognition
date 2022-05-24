@@ -1,8 +1,8 @@
-An image recognition game based on Google's Quickdraw API.
+An image recognition game based on Google's Quickdraw API（参考游戏）：
 
 http://jsur.github.io/picture-recognition/
 
-Original implementation:
+Original implementation（官方效果）:
 
 https://quickdraw.withgoogle.com/
 
